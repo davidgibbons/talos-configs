@@ -3,11 +3,13 @@ customization:
     - "nomodeset"
     systemExtensions:
         officialExtensions:
-            - siderolabs/v4l-uvc-drivers
-            - siderolabs/util-linux-tools
-            - siderolabs/i915-ucode
+            - siderolabs/binfmt-misc
+            - siderolabs/i915
+            - siderolabs/intel-ice-firmware
             - siderolabs/intel-ucode
             - siderolabs/iscsi-tools
-            - siderolabs/nut-client
-            - siderolabs/tailscale
-            - siderolabs/gasket-driver
+            - siderolabs/mei
+            - siderolabs/nfsd
+            - siderolabs/nvme-cli
+            - siderolabs/uinput
+            - siderolabs/util-linux-tools

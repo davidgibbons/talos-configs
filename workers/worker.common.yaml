@@ -1,33 +1,28 @@
 machine:
   type: worker
-  kubelet:
-    extraMounts:
-      - destination: /var/lib/longhorn-ssd
-        type: bind
-        source: /var/lib/longhorn-ssd
-        options:
-          - bind
-          - rshared
-          - rw
-      - destination: /var/lib/longhorn-nvme-1
-        type: bind
-        source: /var/lib/longhorn-nvme-1
-        options:
-          - bind
-          - rshared
-          - rw
-      - destination: /var/lib/longhorn-nvme-2
-        type: bind
-        source: /var/lib/longhorn-nvme-2
-        options:
-          - bind
-          - rshared
-          - rw
   kernel:
     modules:
     - name: overlay
     - name: br_netfilter
     - name: iptable_raw
     - name: ip6_tables
-    - name: mlx4_en
-    - name: uvcvideo
+    - name: nvme_tcp
+    - name: vfio_pci
+  kubelet:
+    extraMounts:
+      - destination: /var/lib/longhorn
+        type: bind
+        source: /var/lib/longhorn
+        options:
+          - bind
+          - rshared
+          - rw
+      - destination: /var/mnt/longhorn
+        type: bind
+        source: /var/mnt/longhorn
+        options:
+          - bind
+          - rshared
+          - rw
+  sysctls:
+    vm.nr_hugepages: "1024"

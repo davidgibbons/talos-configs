@@ -1,14 +1,11 @@
 cluster:
   network:
-    podSubnets:
-    - 172.17.0.0/16
-    serviceSubnets:
-    - 172.18.0.0/16
     cni:
       name: none
+    podSubnets:
+    - 10.244.0.0/16
+    serviceSubnets:
+    - 10.96.0.0/12
+  clusterName: pureroot
   proxy:
     disabled: true
-    image: registry.k8s.io/kube-proxy:v1.31.0
-    extraArgs:
-      metrics-bind-address: '0.0.0.0:10249'
-  clusterName: home

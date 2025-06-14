@@ -1,12 +1,13 @@
 customization:
     systemExtensions:
         officialExtensions:
-            - siderolabs/amd-ucode
+            - siderolabs/binfmt-misc
+            - siderolabs/i915
+            - siderolabs/intel-ice-firmware
             - siderolabs/intel-ucode
-            - siderolabs/i915-ucode
-            - siderolabs/v4l-uvc-drivers
-            - siderolabs/util-linux-tools
             - siderolabs/iscsi-tools
-            - siderolabs/tailscale
-            - siderolabs/nut-client
-            - siderolabs/gasket-driver
+            - siderolabs/mei
+            - siderolabs/nfsd
+            - siderolabs/nvme-cli
+            - siderolabs/uinput
+            - siderolabs/util-linux-tools

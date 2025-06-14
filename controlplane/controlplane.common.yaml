@@ -1,13 +1,4 @@
 machine:
-  kubelet:
-    extraMounts:
-      - destination: /var/lib/longhorn-nvme
-        type: bind
-        source: /var/lib/longhorn-nvme
-        options:
-          - bind
-          - rshared
-          - rw
   features:
     kubernetesTalosAPIAccess:
       enabled: true
@@ -21,39 +12,28 @@ machine:
     - name: br_netfilter
     - name: iptable_raw
     - name: ip6_tables
-    - name: uvcvideo
-
-    # # Machine system disk encryption configuration.
-    # systemDiskEncryption:
-    #     # Ephemeral partition encryption.
-    #     ephemeral:
-    #         provider: luks2 # Encryption provider to use for the encryption.
-    #         # Defines the encryption keys generation and storage method.
-    #         keys:
-    #             - # Deterministically generated key from the node UUID and PartitionLabel.
-    #               nodeID: {}
-    #               slot: 0 # Key slot number for LUKS2 encryption.
-    #               
-    #               # # KMS managed encryption key.
-    #               # kms:
-    #               #     endpoint: https://192.168.88.21:4443 # KMS endpoint to Seal/Unseal the key.
-    #         
-    #         # # Cipher kind to use for the encryption. Depends on the encryption provider.
-    #         # cipher: aes-xts-plain64
-
-    #         # # Defines the encryption sector size.
-    #         # blockSize: 4096
-
-    #         # # Additional --perf parameters for the LUKS2 encryption.
-    #         # options:
-    #         #     - no_read_workqueue
-    #         #     - no_write_workqueue
+    - name: nvme_tcp
+    - name: vfio_pci
+  kubelet:
+    extraMounts:
+      - destination: /var/lib/longhorn
+        type: bind
+        source: /var/lib/longhorn
+        options:
+          - bind
+          - rshared
+          - rw
+      - destination: /var/mnt/longhorn
+        type: bind
+        source: /var/mnt/longhorn
+        options:
+          - bind
+          - rshared
+          - rw
 cluster:
-  allowSchedulingOnControlPlanes: false
+  allowSchedulingOnControlPlanes: true
   scheduler:
-    image: registry.k8s.io/kube-scheduler:v1.31.0
-    extraArgs:
-      bind-address: '0.0.0.0'
+    image: registry.k8s.io/kube-scheduler:v1.32.1
     config:
       apiVersion: kubescheduler.config.k8s.io/v1
       kind: KubeSchedulerConfiguration
@@ -74,33 +54,29 @@ cluster:
         cpu: 100m
         memory: 100Mi
   controllerManager:
-    image: registry.k8s.io/kube-controller-manager:v1.31.0
-    extraArgs:
-      bind-address: '0.0.0.0'
+    image: registry.k8s.io/kube-controller-manager:v1.32.1
     resources:
       requests:
         cpu: 100m
         memory: 175Mi
   apiServer:
-    image: registry.k8s.io/kube-apiserver:v1.31.0
-    extraArgs:
-      oidc-client-id: YR6w7D1wpv6QTsbCFEEMdDjsiDP2V6O8GlB9Zakb
-      oidc-username-claim: email
-      oidc-groups-claim: groups
-      oidc-issuer-url: https://authentik.mcswain.dev/application/o/kubernetes-api-server/
+    image: registry.k8s.io/kube-apiserver:v1.32.1
     certSANs:
-    - api.k8s.jacob.network
-    - chi.k8s.jacob.network
-    - psi.k8s.jacob.network
-    - omega.k8s.jacob.network
-    - 192.168.1.251
-    - 192.168.1.250
-    - 192.168.1.249
+    - master01.pureroot.com
+    - master02.pureroot.com
+    - node07.pureroot.com
+    - k8s.pureroot.com
+    - 192.168.84.50
+    - 192.168.84.51
+    - 192.168.84.52
+    - 192.168.84.53
+    - 192.168.84.65
+    - 192.168.84.66
     - 127.0.0.1
     resources:
       requests:
-        cpu: 1000m
-        memory: 3Gi
+        cpu: 500m
+        memory: 1Gi
     admissionControl:
     - name: PodSecurity
       configuration:
@@ -113,11 +89,3 @@ cluster:
             warn: baseline
             warn-version: latest
         kind: PodSecurityConfiguration
-    - name: NamespaceLifecycle
-    - name: LimitRanger
-    - name: ServiceAccount
-    - name: DefaultStorageClass
-    - name: DefaultTolerationSeconds
-    - name: MutatingAdmissionWebhook
-    - name: ValidatingAdmissionWebhook
-    - name: ResourceQuota
